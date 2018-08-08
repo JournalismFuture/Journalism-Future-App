@@ -2,12 +2,15 @@ import React from "react";
 import {
   StyleSheet,
   Text,
+  Image,
   View,
   TouchableOpacity,
   TouchableHighlight,
   AppRegistry
 } from "react-native";
 import { MapView } from "expo";
+
+import GeneralControls from "./components/generalControls.js";
 
 const DEFAULT_PADDING = { top: 500, right: 100, bottom: 100, left: 100 };
 
@@ -16,6 +19,8 @@ export default class App extends React.Component {
     super(props);
 
     this.state = {
+      zoomLevel: 9,
+      authorPath: "./Images/default.jpg",
       headline: "",
       subline: "",
       currentMarker: 0,
@@ -41,13 +46,20 @@ export default class App extends React.Component {
       .then(responseJson => {
         console.log("success ", responseJson);
 
+        var markers = responseJson.politics;
+
         this.setState({
           isLoading: false,
           markers: responseJson.politics,
-          headline: responseJson.politics[0].headline,
-          subline: responseJson.politics[0].subline
+          authorPath: markers[0].author.imagePath,
+          headline: markers[0].headline,
+          subline: markers[0].subline,
+          curPos: {
+            latitude: markers[0].latitude,
+            longitude: markers[0].longitude
+          }
         });
-        this.fitAllMarkers(responseJson.politics);
+        this.updateMap(markers[0].latitude, markers[0].longitude, 1000);
       })
       .catch(error => {
         console.log(error);
@@ -55,17 +67,14 @@ export default class App extends React.Component {
   }
 
   fitAllMarkers(markers) {
-    console.log("FitAllMarkers..");
-
     this.map.fitToCoordinates(markers, {
       edgePadding: DEFAULT_PADDING,
       animated: true
     });
   }
 
-  updateMap(lat, lon) {
-    this.map.animateToCoordinate({ latitude: lat, longitude: lon }, 1000);
-    console.log(lat, lon);
+  updateMap(lat, lon, duration) {
+    this.map.animateToCoordinate({ latitude: lat, longitude: lon }, duration);
   }
 
   componentDidMount() {
@@ -74,6 +83,7 @@ export default class App extends React.Component {
 
   markerClick(marker, index) {
     this.setState({
+      authorPath: marker.author.imagePath,
       headline: marker.headline,
       subline: marker.subline,
       currentMarker: index
@@ -94,8 +104,6 @@ export default class App extends React.Component {
       }
     }
 
-    console.log(newCurrentMarker);
-
     var marker = this.state.markers[newCurrentMarker];
 
     var oldLatitude = this.state.markers[this.state.currentMarker].latitude;
@@ -104,11 +112,13 @@ export default class App extends React.Component {
     var newLatitude = marker.latitude;
     var newLongtitude = marker.longitude;
 
-    console.log(oldLatitude, oldLongitude, newLatitude, newLongtitude);
     var newLongitudeDelta = Math.abs(oldLongitude - newLongtitude);
     var newLatitudeDelta = Math.abs(oldLatitude - newLatitude);
 
+    console.log(marker.author.imagePath);
+
     this.setState({
+      authorPath: marker.author.imagePath,
       headline: marker.headline,
       subline: marker.subline,
       currentMarker: newCurrentMarker,
@@ -119,8 +129,16 @@ export default class App extends React.Component {
         longitude: newLongtitude
       }
     });
+    var diffLat = Math.abs(oldLatitude - newLatitude);
+    var diffLon = Math.abs(oldLongitude - newLongtitude);
 
-    this.updateMap(newLatitude, newLongtitude);
+    var diff = diffLat + diffLon;
+    var duration = (diff * 100) / 2;
+    if (duration < 1000) {
+      duration = 1000;
+    }
+
+    this.updateMap(newLatitude, newLongtitude, duration);
   }
   showTopics() {}
 
@@ -132,6 +150,14 @@ export default class App extends React.Component {
     return (
       <View style={styles.flex}>
         <MapView
+          mapType="mutedStandard"
+          showsCompass={false}
+          showsPointsOfInterest={false}
+          showsMyLocationButton={false}
+          showsTraffic={false}
+          showsIndoors={false}
+          cacheEnabled={true}
+          maxZoomLevel={this.state.zoomLevel}
           onRegionChange={region => this.regionChange(region)}
           ref={el => (this.map = el)}
           style={styles.flex}
@@ -166,106 +192,19 @@ export default class App extends React.Component {
                 );
               })}
         </MapView>
-        <View style={styles.buttonContainerUpDown}>
-          <TouchableOpacity
-            style={[styles.topicButton, styles.down]}
-            onPress={() => this.showTopics()}
-          >
-            <Text style={styles.text}>S</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.topCard, styles.up]}
-            onPress={() => this.showTopics()}
-          >
-            <Text style={styles.headline}>{this.state.headline}</Text>
-            <Text style={styles.subline}>{this.state.subline}</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.buttonContainerLeftRight}>
-          <TouchableOpacity
-            style={[styles.storyButton, styles.left]}
-            onPress={() => this.nextTopic(-1)}
-          >
-            <Text style={styles.text}>l</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.storyButton, styles.right]}
-            onPress={() => this.nextTopic(1)}
-          >
-            <Text style={styles.text}>r</Text>
-          </TouchableOpacity>
-        </View>
+        <GeneralControls
+          nextTopic={this.nextTopic}
+          authorPath={this.state.authorPath}
+          headline={this.state.headline}
+          subline={this.state.subline}
+        />
       </View>
     );
   }
 }
-
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
     width: "100%"
-  },
-
-  headline: {
-    fontSize: 16,
-    color: "black"
-  },
-  subline: {
-    fontSize: 12,
-    color: "rgb(127,127,127)"
-  },
-
-  buttonContainerLeftRight: {
-    ...StyleSheet.absoluteFillObject,
-    flexDirection: "column",
-    justifyContent: "center",
-    margin: 8
-  },
-  buttonContainerUpDown: {
-    ...StyleSheet.absoluteFillObject,
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 32,
-    marginBottom: 16
-  },
-  text: { color: "white" },
-  storyButton: {
-    backgroundColor: "rgba(63, 148, 136,1)",
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 15,
-    height: 30,
-    width: 30
-  },
-  topicButton: {
-    backgroundColor: "rgba(63, 148, 136,1)",
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 25,
-    height: 50,
-    width: 50
-  },
-  topCard: {
-    backgroundColor: "rgba(255, 255, 255,1)",
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 40,
-    height: 80,
-    width: "90%"
-  },
-  up: {
-    alignSelf: "flex-start"
-  },
-  down: {
-    alignSelf: "flex-end"
-  },
-  left: {
-    alignSelf: "flex-start"
-  },
-  right: {
-    alignSelf: "flex-end"
   }
 });
