@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "journalism-future",
+    "description": "This project is really great.",
+    "slug": "journalism-future",
+    "privacy": "public",
+    "sdkVersion": "29.0.0",
+    "platforms": ["ios", "android"],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.journalismfuture"
+    },
+    "android":{
+      "package": "com.yourcompany.journalismfuture",
+      "config": {
+        "googleMaps": { "apiKey": "AIzaSyAHqaO_exVT2U5DT6hZ3nn0z2ymIhRi1OU" }   
+     }
+    }
+
+  }
+}
