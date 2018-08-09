@@ -16,17 +16,11 @@ export default class GeneralControls extends React.Component {
         <View style={styles.buttonContainerUpDown}>
           <TouchableOpacity
             style={[styles.topicButton, styles.down]}
-            onPress={() => this.props.showTopics()}
+            onPress={() => this.props.startArticleTour()}
           >
-            <Image
-              source={require("../Icons/politic-white.png")}
-              style={{ width: 34, height: 34, margin: 10 }}
-            />
+            <Text style={styles.buttonText}>Start</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.topCard, styles.up]}
-            onPress={() => this.props.showStory(this.props.currentMarker)}
-          >
+          <TouchableOpacity style={[styles.topCard, styles.up]}>
             <View style={styles.leftSide}>
               <Image
                 source={{ uri: this.props.authorPath }}
@@ -39,32 +33,16 @@ export default class GeneralControls extends React.Component {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={styles.buttonContainerLeftRight}>
-          <TouchableOpacity
-            style={[styles.storyButton, styles.left]}
-            onPress={() => this.props.nextTopic(-1)}
-          >
-            <Image
-              source={require("../Icons/left-arrow-white.png")}
-              style={{ width: 30, height: 30, margin: 10 }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.storyButton, styles.right]}
-            onPress={() => this.props.nextTopic(1)}
-          >
-            <Image
-              source={require("../Icons/right-arrow-white.png")}
-              style={{ width: 30, height: 30, margin: 10 }}
-            />
-          </TouchableOpacity>
-        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  buttonText: {
+    color: "white"
+  },
+
   flex: {
     flex: 1,
     width: "100%"
@@ -111,7 +89,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 25,
     height: 50,
-    width: 50
+    width: 100
   },
   topCard: {
     display: "flex",

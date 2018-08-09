@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  BackHandler,
   StyleSheet,
   Text,
   Image,
@@ -8,9 +9,11 @@ import {
   TouchableHighlight,
   AppRegistry
 } from "react-native";
-import { MapView } from "expo";
+import { MapView, Polyline } from "expo";
 
 import GeneralControls from "./components/generalControls.js";
+import StoryOverviewControls from "./components/storyOverviewControls.js";
+import StoryControls from "./components/storyControls.js";
 
 const DEFAULT_PADDING = { top: 500, right: 100, bottom: 100, left: 100 };
 
@@ -19,12 +22,15 @@ export default class App extends React.Component {
     super(props);
 
     this.state = {
-      zoomLevel: 9,
+      articleState: 1,
+      zoomLevel: 6,
       authorPath: "./Images/default.jpg",
       headline: "",
       subline: "",
       currentMarker: 0,
+      oldMarkers: [],
       markers: [],
+      polylines: [],
       isLoading: true,
       prevPos: null,
       curPos: { latitude: 40.76727216, longitude: -73.99392888 },
@@ -38,6 +44,9 @@ export default class App extends React.Component {
     this.fitAllMarkers = this.fitAllMarkers.bind(this);
     this.nextTopic = this.nextTopic.bind(this);
     this.regionChange = this.regionChange.bind(this);
+    this.showStory = this.showStory.bind(this);
+    this.handleBackPress = this.handleBackPress.bind(this);
+    this.startArticleTour = this.startArticleTour.bind(this);
   }
 
   fetchMarkerData() {
@@ -72,12 +81,41 @@ export default class App extends React.Component {
       animated: true
     });
   }
+  handleBackPress = () => {
+    console.log("trigger");
 
+    if (this.state.articleState == 2) {
+      var marker = this.state.oldMarkers[this.state.currentMarker];
+
+      this.setState({
+        markers: this.state.oldMarkers,
+        oldMarkers: [],
+        polylines: [],
+        articleState: 1
+      });
+
+      this.map.animateToRegion(
+        {
+          latitude: marker.latitude,
+          longitude: marker.longitude,
+          latitudeDelta: 8.563216329243893,
+          longitudeDelta: 7.910157255828381
+        },
+        1000
+      );
+      //this.setState({ zoomLevel: 6 });
+      //this.updateMap(marker.latitude, marker.longitude, 1000);
+    }
+    return true;
+  };
   updateMap(lat, lon, duration) {
     this.map.animateToCoordinate({ latitude: lat, longitude: lon }, duration);
   }
-
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", this.handleBackPress);
+  }
   componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", this.handleBackPress);
     this.fetchMarkerData();
   }
 
@@ -142,13 +180,37 @@ export default class App extends React.Component {
   }
   showTopics() {}
 
+  startArticleTour() {
+    var marker = this.state.markers[0];
+    this.setState({
+      markers: [marker],
+      polylines: [],
+      articleState: 3,
+      zoomLevel: 12
+    });
+    this.fitAllMarkers([marker]);
+  }
+
+  showStory(currentMarkerPosition) {
+    var marker = this.state.markers[currentMarkerPosition];
+
+    this.setState({
+      oldMarkers: this.state.markers,
+      markers: marker.story,
+      polylines: marker.polylines,
+      articleState: 2,
+      zoomLevel: 12
+    });
+    this.fitAllMarkers(marker.story);
+  }
+
   regionChange(e) {
-    //console.log(e.latitude, e.longitude);
+    //console.log(e.latitude, e.longitude, e.latitudeDelta, e.longitudeDelta);
   }
 
   render() {
     return (
-      <View style={styles.flex}>
+      <View style={styles.main}>
         <MapView
           mapType="mutedStandard"
           showsCompass={false}
@@ -160,7 +222,7 @@ export default class App extends React.Component {
           maxZoomLevel={this.state.zoomLevel}
           onRegionChange={region => this.regionChange(region)}
           ref={el => (this.map = el)}
-          style={styles.flex}
+          style={styles.map}
           initialRegion={{
             ...this.state.curPos,
             latitudeDelta: this.state.latitudeDelta,
@@ -191,20 +253,62 @@ export default class App extends React.Component {
                   />
                 );
               })}
+          {!this.state.isLoading &&
+            this.state.articleState == 2 &&
+            this.state.polylines.map(polyline => (
+              <MapView.Polyline
+                key={polyline.id}
+                coordinates={polyline.coordinates}
+                strokeColor="rgba(159, 159, 159,1)"
+                fillColor="rgba(159, 159, 159,1)"
+                strokeWidth={1}
+              />
+            ))}
         </MapView>
-        <GeneralControls
-          nextTopic={this.nextTopic}
-          authorPath={this.state.authorPath}
-          headline={this.state.headline}
-          subline={this.state.subline}
-        />
+        {this.state.articleState == 1 && (
+          <GeneralControls
+            style={styles.overlay}
+            currentMarker={this.state.currentMarker}
+            showStory={this.showStory}
+            showTopics={this.sßhowTopics}
+            nextTopic={this.nextTopic}
+            authorPath={this.state.authorPath}
+            headline={this.state.headline}
+            subline={this.state.subline}
+          />
+        )}
+        {this.state.articleState == 2 && (
+          <StoryOverviewControls
+            style={styles.overlay}
+            startArticleTour={this.startArticleTour}
+            authorPath={this.state.authorPath}
+            headline={this.state.headline}
+            subline={this.state.subline}
+          />
+        )}
+        {this.state.articleState == 3 && (
+          <StoryControls
+            style={styles.overlay}
+            showStory={this.showStory}
+            showTopics={this.showTopics}
+            nextTopic={this.nextTopic}
+            authorPath={this.state.authorPath}
+            headline={this.state.headline}
+            subline={this.state.subline}
+          />
+        )}
       </View>
     );
   }
 }
 const styles = StyleSheet.create({
-  flex: {
+  main: {
     flex: 1,
     width: "100%"
-  }
+  },
+  map: {
+    flex: 1,
+    width: "100%"
+  },
+  overlay: {}
 });
