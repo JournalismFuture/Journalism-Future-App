@@ -14,8 +14,16 @@ import { MapView, Polyline } from "expo";
 import GeneralControls from "./components/generalControls.js";
 import StoryOverviewControls from "./components/storyOverviewControls.js";
 import StoryControls from "./components/storyControls.js";
+import Profile from "./components/profile.js";
 
 const DEFAULT_PADDING = { top: 500, right: 100, bottom: 100, left: 100 };
+const DEFAULT_LATITUDE = 40.76727216;
+const DEFAULT_LONGITUDE = -73.99392888;
+const DEFAULT_DETAIL_OFFSET = 0.03053826679;
+const DEFAULT_LATITUDE_DELTA = 8.563216329243893;
+const DEFAULT_LONGITUDE_DELLTA = 7.910157255828381;
+const JOURNALISM_FUTURE_API = "http://192.168.1.106:3000/data/test_data.json";
+const DEFAUlT_ANIMATION_LENGTH = 1000;
 
 export default class App extends React.Component {
   constructor(props) {
@@ -27,18 +35,19 @@ export default class App extends React.Component {
       authorPath: "./Images/default.jpg",
       headline: "",
       subline: "",
+      content: "",
       currentMarker: 0,
       oldMarkers: [],
       markers: [],
       polylines: [],
       isLoading: true,
       prevPos: null,
-      curPos: { latitude: 40.76727216, longitude: -73.99392888 },
+      curPos: { latitude: DEFAULT_LATITUDE, longitude: DEFAULT_LONGITUDE },
       curAng: 45,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421
+      latitudeDelta: DEFAULT_LATITUDE_DELTA,
+      longitudeDelta: DEFAULT_LONGITUDE_DELLTA
     };
-    this.showTopics = this.showTopics.bind(this);
+    this.showProfile = this.showProfile.bind(this);
     this.markerClick = this.markerClick.bind(this);
     this.updateMap = this.updateMap.bind(this);
     this.fitAllMarkers = this.fitAllMarkers.bind(this);
@@ -50,7 +59,7 @@ export default class App extends React.Component {
   }
 
   fetchMarkerData() {
-    fetch("http://192.168.1.106:3000/data/test_data.json")
+    fetch(JOURNALISM_FUTURE_API)
       .then(response => response.json())
       .then(responseJson => {
         console.log("success ", responseJson);
@@ -68,7 +77,11 @@ export default class App extends React.Component {
             longitude: markers[0].longitude
           }
         });
-        this.updateMap(markers[0].latitude, markers[0].longitude, 1000);
+        this.updateMap(
+          markers[0].latitude,
+          markers[0].longitude,
+          DEFAUlT_ANIMATION_LENGTH
+        );
       })
       .catch(error => {
         console.log(error);
@@ -98,8 +111,8 @@ export default class App extends React.Component {
         {
           latitude: marker.latitude,
           longitude: marker.longitude,
-          latitudeDelta: 8.563216329243893,
-          longitudeDelta: 7.910157255828381
+          latitudeDelta: DEFAULT_LATITUDE_DELTA,
+          longitudeDelta: DEFAULT_LONGITUDE_DELLTA
         },
         1000
       );
@@ -173,22 +186,44 @@ export default class App extends React.Component {
     var diff = diffLat + diffLon;
     var duration = (diff * 100) / 2;
     if (duration < 1000) {
-      duration = 1000;
+      duration = DEFAUlT_ANIMATION_LENGTH;
     }
 
     this.updateMap(newLatitude, newLongtitude, duration);
   }
-  showTopics() {}
+  showProfile() {
+    this.setState({
+      oldMarkers: this.state.markers,
+      markers: [],
+      polylines: [],
+      content: "",
+      headline: "",
+      articleState: 0
+    });
+  }
 
   startArticleTour() {
     var marker = this.state.markers[0];
     this.setState({
       markers: [marker],
       polylines: [],
+      content: marker.content,
+      headline: marker.headline,
       articleState: 3,
       zoomLevel: 12
     });
-    this.fitAllMarkers([marker]);
+    this.map.fitToCoordinates(
+      [
+        {
+          latitude: marker.latitude - DEFAULT_DETAIL_OFFSET,
+          longitude: marker.longitude
+        }
+      ],
+      {
+        edgePadding: { top: 0, right: 0, bottom: 3300, left: 0 },
+        animated: true
+      }
+    );
   }
 
   showStory(currentMarkerPosition) {
@@ -205,7 +240,12 @@ export default class App extends React.Component {
   }
 
   regionChange(e) {
-    //console.log(e.latitude, e.longitude, e.latitudeDelta, e.longitudeDelta);
+    // console.log(
+    //   e.latitude,
+    //   e.longitude,
+    //   this.state.markers[0].latitude - e.latitude,
+    //   this.state.markers[0].longitude - e.longitude
+    // );
   }
 
   render() {
@@ -265,12 +305,13 @@ export default class App extends React.Component {
               />
             ))}
         </MapView>
+        {this.state.articleState == 0 && <Profile style={styles.overlay} />}
         {this.state.articleState == 1 && (
           <GeneralControls
             style={styles.overlay}
             currentMarker={this.state.currentMarker}
             showStory={this.showStory}
-            showTopics={this.sßhowTopics}
+            showProfile={this.showProfile}
             nextTopic={this.nextTopic}
             authorPath={this.state.authorPath}
             headline={this.state.headline}
@@ -281,6 +322,7 @@ export default class App extends React.Component {
           <StoryOverviewControls
             style={styles.overlay}
             startArticleTour={this.startArticleTour}
+            showProfile={this.showProfile}
             authorPath={this.state.authorPath}
             headline={this.state.headline}
             subline={this.state.subline}
@@ -289,8 +331,9 @@ export default class App extends React.Component {
         {this.state.articleState == 3 && (
           <StoryControls
             style={styles.overlay}
+            content={this.state.content}
             showStory={this.showStory}
-            showTopics={this.showTopics}
+            showProfile={this.showProfile}
             nextTopic={this.nextTopic}
             authorPath={this.state.authorPath}
             headline={this.state.headline}

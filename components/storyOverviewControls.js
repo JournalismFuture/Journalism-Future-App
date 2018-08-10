@@ -9,7 +9,7 @@ import {
   AppRegistry
 } from "react-native";
 
-export default class GeneralControls extends React.Component {
+export default class StoryOverviewControls extends React.Component {
   render() {
     return (
       <View>

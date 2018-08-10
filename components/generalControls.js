@@ -16,7 +16,7 @@ export default class GeneralControls extends React.Component {
         <View style={styles.buttonContainerUpDown}>
           <TouchableOpacity
             style={[styles.topicButton, styles.down]}
-            onPress={() => this.props.showTopics()}
+            onPress={() => this.props.showProfile()}
           >
             <Image
               source={require("../Icons/politic-white.png")}
