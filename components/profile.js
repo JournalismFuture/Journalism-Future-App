@@ -25,8 +25,43 @@ export default class Profile extends React.Component {
               <Text style={styles.profileEmail}>leon-erath@hotmail.de</Text>
             </View>
           </TouchableOpacity>
+          <View style={styles.flexRow}>
+            <View style={styles.flexRow2}>
+              <Image
+                style={styles.iconStyle}
+                source={require("../Icons/stats_black.png")}
+              />
+              <Text style={styles.textStyle}>Statistiken</Text>
+            </View>
+            <View style={styles.flexRow2}>
+              <Image
+                style={styles.iconStyle}
+                source={require("../Icons/bookmark_black.png")}
+              />
+              <Text style={styles.textStyle}>Offline Artikel</Text>
+            </View>
+          </View>
+          <View style={styles.flexRow}>
+            <View style={styles.flexRow2}>
+              <Image
+                style={styles.iconStyle}
+                source={require("../Icons/quote_black.png")}
+              />
+              <Text style={styles.textStyle}>Zitate</Text>
+            </View>
+            <View style={styles.flexRow2}>
+              <Image
+                style={styles.iconStyle}
+                source={require("../Icons/settings_black.png")}
+              />
+              <Text style={styles.textStyle}>Einstellungen</Text>
+            </View>
+          </View>
         </View>
-        <TouchableOpacity style={[styles.dismissButton, styles.down]}>
+        <TouchableOpacity
+          style={[styles.dismissButton, styles.down]}
+          onPress={() => this.props.closeProfile()}
+        >
           <Image
             source={require("../Icons/dismiss-black.png")}
             style={{ width: 24, height: 24, margin: 10 }}
@@ -59,6 +94,21 @@ const styles = StyleSheet.create({
     height: "84%",
     width: "100%"
   },
+  textStyle: {
+    margin: 8,
+    width: "100%"
+  },
+  flexRow: {
+    display: "flex",
+    flexDirection: "row",
+    margin: 8
+  },
+  flexRow2: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "row",
+    width: "50%"
+  },
   profileBox: {
     display: "flex",
     flexDirection: "row",
@@ -76,6 +126,10 @@ const styles = StyleSheet.create({
   profileInfo: {
     justifyContent: "center",
     padding: 8
+  },
+  iconStyle: {
+    width: 30,
+    height: 30
   },
   profileImage: {
     width: 80,

@@ -56,6 +56,15 @@ export default class App extends React.Component {
     this.showStory = this.showStory.bind(this);
     this.handleBackPress = this.handleBackPress.bind(this);
     this.startArticleTour = this.startArticleTour.bind(this);
+    this.closeProfile = this.closeProfile.bind(this);
+  }
+
+  closeProfile() {
+    this.setState({
+      articleState: 1,
+      markers: this.state.oldMarkers,
+      oldMarkers: []
+    });
   }
 
   fetchMarkerData() {
@@ -68,6 +77,7 @@ export default class App extends React.Component {
 
         this.setState({
           isLoading: false,
+          oldMarkers: [],
           markers: responseJson.politics,
           authorPath: markers[0].author.imagePath,
           headline: markers[0].headline,
@@ -103,7 +113,6 @@ export default class App extends React.Component {
       this.setState({
         markers: this.state.oldMarkers,
         oldMarkers: [],
-        polylines: [],
         articleState: 1
       });
 
@@ -196,8 +205,6 @@ export default class App extends React.Component {
       oldMarkers: this.state.markers,
       markers: [],
       polylines: [],
-      content: "",
-      headline: "",
       articleState: 0
     });
   }
@@ -305,19 +312,22 @@ export default class App extends React.Component {
               />
             ))}
         </MapView>
-        {this.state.articleState == 0 && <Profile style={styles.overlay} />}
-        {this.state.articleState == 1 && (
-          <GeneralControls
-            style={styles.overlay}
-            currentMarker={this.state.currentMarker}
-            showStory={this.showStory}
-            showProfile={this.showProfile}
-            nextTopic={this.nextTopic}
-            authorPath={this.state.authorPath}
-            headline={this.state.headline}
-            subline={this.state.subline}
-          />
+        {this.state.articleState == 0 && (
+          <Profile closeProfile={this.closeProfile} style={styles.overlay} />
         )}
+        {this.state.articleState == 1 &&
+          !this.state.isLoading && (
+            <GeneralControls
+              style={styles.overlay}
+              currentMarker={this.state.currentMarker}
+              showStory={this.showStory}
+              showProfile={this.showProfile}
+              nextTopic={this.nextTopic}
+              authorPath={this.state.authorPath}
+              headline={this.state.headline}
+              subline={this.state.subline}
+            />
+          )}
         {this.state.articleState == 2 && (
           <StoryOverviewControls
             style={styles.overlay}
