@@ -22,7 +22,7 @@ const DEFAULT_LONGITUDE = -73.99392888;
 const DEFAULT_DETAIL_OFFSET = 0.03053826679;
 const DEFAULT_LATITUDE_DELTA = 8.563216329243893;
 const DEFAULT_LONGITUDE_DELLTA = 7.910157255828381;
-const JOURNALISM_FUTURE_API = "http://192.168.1.106:3000/data/test_data.json";
+const JOURNALISM_FUTURE_API = "http://192.168.1.106:3000/api/article/getAll";
 const DEFAUlT_ANIMATION_LENGTH = 1000;
 
 export default class App extends React.Component {
@@ -71,20 +71,16 @@ export default class App extends React.Component {
     fetch(JOURNALISM_FUTURE_API)
       .then(response => response.json())
       .then(responseJson => {
-        console.log("success ", responseJson);
-
-        var markers = responseJson.politics;
-
         this.setState({
           isLoading: false,
           oldMarkers: [],
-          markers: responseJson.politics,
-          authorPath: markers[0].author.imagePath,
-          headline: markers[0].headline,
-          subline: markers[0].subline,
+          markers: responseJson,
+          authorPath: responseJson[0].author.imagePath,
+          headline: responseJson[0].headline,
+          subline: responseJson[0].subline,
           curPos: {
-            latitude: markers[0].latitude,
-            longitude: markers[0].longitude
+            latitude: responseJson[0].latitude,
+            longitude: responseJson[0].longitude
           }
         });
         this.updateMap(
