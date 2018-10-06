@@ -22,7 +22,7 @@ const DEFAULT_LONGITUDE = -73.99392888;
 const DEFAULT_DETAIL_OFFSET = 0.03053826679;
 const DEFAULT_LATITUDE_DELTA = 8.563216329243893;
 const DEFAULT_LONGITUDE_DELLTA = 7.910157255828381;
-const JOURNALISM_FUTURE_API = "http://192.168.1.106:3000/api/article/getAll";
+const JOURNALISM_FUTURE_API = "http://leonerath.de:8081/api/article/getAll";
 const DEFAUlT_ANIMATION_LENGTH = 1000;
 
 export default class App extends React.Component {
