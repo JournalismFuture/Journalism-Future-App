@@ -2381,10 +2381,10 @@ expo-sms@~1.1.0:
     expo-core "~1.2.0"
     expo-permissions-interface "~1.2.0"
 
-expo@^31.0.0:
-  version "31.0.0"
-  resolved "https://registry.yarnpkg.com/expo/-/expo-31.0.0.tgz#f0313a5e1b2207c95b4c415c04cd65f7a5fc892c"
-  integrity sha512-YAHZHuudtZj+fW7uy9LJwSQ1yujd4IuHjHoHAHS5lZ9y6YoBgJKILowftRyRKWvENQT6oo8xsvJbkIFpQH7aeg==
+expo@^31.0.2:
+  version "31.0.2"
+  resolved "https://registry.yarnpkg.com/expo/-/expo-31.0.2.tgz#85d07fbcd9920ff2d5085dcf3f6ea11016a1268b"
+  integrity sha512-YHmt2wZougWapaMZYCgzvmTXhkoX+0JE4+Z+oq2jomwt4iq4tQQ1GjWduNMYdCi/omQWkA9vdJedRauKo7nMJQ==
   dependencies:
     "@babel/runtime" "^7.1.2"
     "@expo/vector-icons" "^8.0.0"
@@ -2440,7 +2440,7 @@ expo@^31.0.0:
     qs "^6.5.0"
     react-native-branch "2.2.5"
     react-native-gesture-handler "1.0.8"
-    react-native-maps expo/react-native-maps#v0.22.0-exp.0
+    react-native-maps "github:expo/react-native-maps#v0.22.0-exp.0"
     react-native-reanimated "1.0.0-alpha.10"
     react-native-screens "1.0.0-alpha.15"
     react-native-svg "8.0.8"
@@ -4396,7 +4396,7 @@ react-native-gesture-handler@1.0.8:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
-react-native-maps@expo/react-native-maps#v0.22.0-exp.0:
+"react-native-maps@github:expo/react-native-maps#v0.22.0-exp.0":
   version "0.22.0"
   uid cb9d9ec23d4d176bddd6d465a583462f9c1056a0
   resolved "https://codeload.github.com/expo/react-native-maps/tar.gz/cb9d9ec23d4d176bddd6d465a583462f9c1056a0"
