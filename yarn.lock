@@ -3907,10 +3907,10 @@ react-native-view-shot@2.5.0:
   resolved "https://registry.yarnpkg.com/react-native-view-shot/-/react-native-view-shot-2.5.0.tgz#428a997f470d3148d0067c5b46abd988ef1aa4c0"
   integrity sha512-xFJA+N7wh8Ik/17I4QB24e0a0L3atg1ScVehvtYR5UBTgHdzTFA0ZylvXp9gkZt7V+AT5Pni0H3NQItpqSKFoQ==
 
-react-native@^0.57.6:
-  version "0.57.6"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.57.6.tgz#517a5df8a635e9f465abec1e47d7d66b0e206c06"
-  integrity sha512-9iDjfoJcF4mWP86F3hAj0sdjIPXR262r1QeHUJwR7oF6s5DAMDCkndpKOawHcDE9vBrpVeu86erbIog+5b2DCg==
+react-native@^0.57.7:
+  version "0.57.7"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.57.7.tgz#5b3af1c43366c41d8d8d2540fea8ce590060bca1"
+  integrity sha512-mdNibV6NblH8gbbcWjLjH6lVOkrXuCiIi+RQ+6e2QlrOIJVsKC216VvBhHsvdDIRO94v1qD8LMnTYlBY09qzQQ==
   dependencies:
     "@babel/runtime" "^7.0.0"
     absolute-path "^0.0.0"
