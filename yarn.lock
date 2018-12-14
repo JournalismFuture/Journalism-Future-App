@@ -3907,10 +3907,10 @@ react-native-view-shot@2.5.0:
   resolved "https://registry.yarnpkg.com/react-native-view-shot/-/react-native-view-shot-2.5.0.tgz#428a997f470d3148d0067c5b46abd988ef1aa4c0"
   integrity sha512-xFJA+N7wh8Ik/17I4QB24e0a0L3atg1ScVehvtYR5UBTgHdzTFA0ZylvXp9gkZt7V+AT5Pni0H3NQItpqSKFoQ==
 
-react-native@^0.57.7:
-  version "0.57.7"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.57.7.tgz#5b3af1c43366c41d8d8d2540fea8ce590060bca1"
-  integrity sha512-mdNibV6NblH8gbbcWjLjH6lVOkrXuCiIi+RQ+6e2QlrOIJVsKC216VvBhHsvdDIRO94v1qD8LMnTYlBY09qzQQ==
+react-native@^0.57.8:
+  version "0.57.8"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.57.8.tgz#1a840fbe144cd3902cc14313a783ce28efc48cb9"
+  integrity sha512-K6DAMTPTq+lxVYC73y4Kh/bgLajddBaIKzwsVeV4JOoS1Fdq48/ISXD3vApV+x+/IBVTXnrT9qlA+9U6MMZCqA==
   dependencies:
     "@babel/runtime" "^7.0.0"
     absolute-path "^0.0.0"
@@ -3960,7 +3960,7 @@ react-native@^0.57.7:
     serve-static "^1.13.1"
     shell-quote "1.6.1"
     stacktrace-parser "^0.1.3"
-    ws "^1.1.0"
+    ws "^1.1.5"
     xcode "^1.0.0"
     xmldoc "^0.4.0"
     yargs "^9.0.0"
@@ -4862,7 +4862,7 @@ write-file-atomic@^1.2.0:
     imurmurhash "^0.1.4"
     slide "^1.1.5"
 
-ws@^1.1.0:
+ws@^1.1.0, ws@^1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/ws/-/ws-1.1.5.tgz#cbd9e6e75e09fc5d2c90015f21f0c40875e0dd51"
   integrity sha512-o3KqipXNUdS7wpQzBHSe180lBGO60SoK0yVo3CYJgb2MkobuWuBX6dhkYP5ORCLd55y+SaflMOV5fqAB53ux4w==
