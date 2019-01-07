@@ -9,7 +9,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "expo": "^31.0.6",
+    "expo": "^32.0.0",
     "react": "16.7.0",
     "react-native": "^0.57.8"
   }
